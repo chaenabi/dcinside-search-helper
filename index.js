@@ -1,11 +1,11 @@
-const axios = require('axios');
+//const axios = require('axios');
 const client = require('cheerio-httpcli');
 const request = require('request');
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 
 const dcinside = 'https://gall.dcinside.com'
-const input = '여소환';
+const input = '서울시장';
 const keyword = encodeURI(input);
 const recommend = '&exception_mode=recommend';
 let path = '/board/lists/?id=bns&s_type=search_name&s_keyword=' + keyword + recommend;
@@ -23,7 +23,7 @@ client.fetch(url, {}, function (error, $, res, body) {
   //  console.log('$:', $)
 });
 
-const getPostContent =  (url) => {
+const getPostContent = (url) => {
     request({ url: url }, function (error, response, body) {
        const dom = new JSDOM(body)
      
@@ -38,11 +38,11 @@ const getPostContent =  (url) => {
                         sorted_saw.push(saw);
                        title = new JSDOM(e.innerHTML).window.document.querySelector('a').innerHTML.split('</em>')[1]
                        andromeda_cnt++
-                       console.log(`[게시물  제목] ${title}`)
-                       console.log(`[날        짜] ${date}`)
-                       console.log(`[조   회   수] ${saw}`)
-                       console.log(`[추   천   수] ${rec_cnt}`)
-                       console.log(`[념글  카운트] ${andromeda_cnt}`)
+                       console.log(`[게시물 제목] ${title}`)
+                       console.log(`[날     짜] ${date}`)
+                       console.log(`[조  회  수] ${saw}`)
+                       console.log(`[추  천  수] ${rec_cnt}`)
+                       console.log(`[념글 카운트] ${andromeda_cnt}`)
                        console.log('---------------------------')
                     }
                     else dom.window.document.querySelector('.ub-writer').setAttribute('user_name', '');
@@ -56,10 +56,12 @@ const getPostContent =  (url) => {
     }) 
 };
 
-const showStat = async (r, c) => {
-   console.log(`최대 추천수 :  ${r.sort((a, b) => b - a)[0]}`)
-   console.log(`최대 조회수 :  ${c.sort((a, b) => b - a)[0]}`)
+const showStat = () => {   
+   getPostContent(url)
+   setTimeout(() => {
+      console.log(`최대 추천수 :  ${sorted_rec.sort((a, b) => b - a)[0]}`)
+      console.log(`최대 조회수 :  ${sorted_saw.sort((a, b) => b - a)[0]}`)
+   },  30000)
 }
 
-getPostContent(url)
-showStat(sorted_rec, sorted_saw) // 
+showStat()
