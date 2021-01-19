@@ -13,13 +13,17 @@ let url = dcinside + path;
 let title = "";
 let andromeda_cnt = 0;
 let date = "";
+let saw = "";
+let rec_cnt = "";
+let sorted_saw = [];
+let sorted_rec = [];
 
 client.fetch(url, {}, function (error, $, res, body) {
   //  console.log('error:', error)
   //  console.log('$:', $)
 });
 
-const getPostContent = (url) => {
+const getPostContent =  (url) => {
     request({ url: url }, function (error, response, body) {
        const dom = new JSDOM(body)
      
@@ -28,11 +32,17 @@ const getPostContent = (url) => {
           tbody.forEach((e) => {
                      if (dom.window.document.querySelector('.ub-writer').getAttribute('user_name') !== '운영자') {  
                         date = e.querySelectorAll('td')[3].getAttribute('title')
+                        saw = e.querySelectorAll('td')[4].innerHTML
+                        rec_cnt = e.querySelectorAll('td')[5].innerHTML
+                        sorted_rec.push(rec_cnt);
+                        sorted_saw.push(saw);
                        title = new JSDOM(e.innerHTML).window.document.querySelector('a').innerHTML.split('</em>')[1]
                        andromeda_cnt++
-                       console.log(`[게시물 제목] ${title}`)
-                       console.log(`[날       짜] ${date}`)
-                       console.log(`[갯수 카운트] ${andromeda_cnt}`)
+                       console.log(`[게시물  제목] ${title}`)
+                       console.log(`[날        짜] ${date}`)
+                       console.log(`[조   회   수] ${saw}`)
+                       console.log(`[추   천   수] ${rec_cnt}`)
+                       console.log(`[념글  카운트] ${andromeda_cnt}`)
                        console.log('---------------------------')
                     }
                     else dom.window.document.querySelector('.ub-writer').setAttribute('user_name', '');
@@ -43,7 +53,13 @@ const getPostContent = (url) => {
          url = dcinside + path
          getPostContent(url)
        }
-    }); 
+    }) 
 };
 
+const showStat = async (r, c) => {
+   console.log(`최대 추천수 :  ${r.sort((a, b) => b - a)[0]}`)
+   console.log(`최대 조회수 :  ${c.sort((a, b) => b - a)[0]}`)
+}
+
 getPostContent(url)
+showStat(sorted_rec, sorted_saw) // 
