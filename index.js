@@ -10,12 +10,12 @@ const gallname = 'pridepc_new4'
 const writerSearch = 's_type=search_name'
 const contentSearch = 's_type=search_subject_memo'
 
-const input = '추천'
+const input = '90만'
 const keyword = encodeURI(input)
 
 // if you want writer, change contentSearch to writerSearch variable.
 // if you search not recommend contents, just remove the variable.
-let path = '/board/lists/?id=' + gallname + '&' + contentSearch + '&s_keyword=' + keyword + recommend; 
+let path = '/board/lists/?id=' + gallname + '&' + contentSearch + '&s_keyword=' + keyword// + recommend 
 let url = dcinside + path;
 let title = "";
 let andromeda_cnt = 0;
@@ -25,6 +25,7 @@ let rec_cnt = "";
 let sorted_saw = [];
 let sorted_rec = [];
 let hyper_link = "";
+let comment_cnt = "";
 
 client.fetch(url, {}, function (error, $, res, body) {
   //  console.log('error:', error)
@@ -39,7 +40,11 @@ const getPostContent = (url) => {
           const tbody = dom.window.document.querySelectorAll('tr.ub-content')
           tbody.forEach((e) => {
                      if (dom.window.document.querySelector('.ub-writer').getAttribute('user_name') !== '운영자') {  
-                        hyper_link = e.querySelectorAll('td')[1].querySelector('.reply_numbox') === null ? '링크 없음' : e.querySelectorAll('td')[1].querySelector('.reply_numbox').getAttribute('href')
+                        hyper_link = e.querySelectorAll('td')[1].querySelector('.reply_numbox') === null ? '링크 없음' : 
+                                                         e.querySelectorAll('td')[1].querySelector('.reply_numbox').getAttribute('href')
+                        comment_cnt =  e.querySelectorAll('td')[1].querySelector('.reply_numbox') === null ? '0' : 
+                                                          e.querySelectorAll('td')[1].querySelector('.reply_numbox').querySelector('.reply_num').innerHTML
+            
                         date = e.querySelectorAll('td')[3].getAttribute('title')
                         if (date === null) return;
                         saw = e.querySelectorAll('td')[4].innerHTML
@@ -53,8 +58,9 @@ const getPostContent = (url) => {
                         console.log(`[날     짜] ${date}`)
                         console.log(`[조  회  수] ${saw}`)
                         console.log(`[추  천  수] ${rec_cnt}`)
+                        console.log(`[댓  글  수] ${comment_cnt}`)
                         console.log(`[링      크] ${hyper_link}`)
-                        console.log(`[념글 카운트] ${andromeda_cnt}`)
+                        //console.log(`[념글 카운트] ${andromeda_cnt}`) active only recommend search
                         console.log('---------------------------')
                     }
                     else dom.window.document.querySelector('.ub-writer').setAttribute('user_name', '');
