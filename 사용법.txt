@@ -1,0 +1,15 @@
+1. nodejs 설치
+2. vscode 설치하고 nodejs 설정 세팅 (선택사항)
+3. gallsearch.js 또는 minigallsearch.js 파일에서 const input = '설명' 부분을 찾는다.
+4. 검색을 원하는 내용으로 바꾼다 예시) const input = "ㅎㅇ" -> ㅎㅇ라고 적힌 게시물을 찾을 수 있다.
+4. 터미널에서 node minigallsearch.js > result.txt
+5. result.txt를 통해 결과를 수집완료
+
+ps. 글쓴이 검색, 개념글이 아닌 일반 글 검색도 세팅가능 
+const writerSearch = 's_type=search_name'
+const contentSearch = 's_type=search_subject_memo'
+const recommend = '&exception_mode=recommend'
+등이 해당 세팅이고,
+
+let path = mini + '/board/lists/?id=' + gallname + '&' + contentSearch + '&s_keyword=' + keyword + recommend 
+에서 위의 변수들을 적절하게 변경해주면 된다.

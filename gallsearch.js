@@ -6,16 +6,23 @@ const { JSDOM } = jsdom;
 
 const dcinside = 'https://gall.dcinside.com'
 const recommend = '&exception_mode=recommend'
-const gallname = 'pridepc_new4'
 const writerSearch = 's_type=search_name'
 const contentSearch = 's_type=search_subject_memo'
 
+
+
+const gallname = 'pridepc_new4'
 const input = '견적'
 const keyword = encodeURI(input)
+
+
 
 // if you want writer, change contentSearch to writerSearch variable.
 // if you search not recommend contents, just remove the variable.
 let path = '/board/lists/?id=' + gallname + '&' + contentSearch + '&s_keyword=' + keyword// + recommend 
+
+
+
 let url = dcinside + path;
 let title = "";
 let andromeda_cnt = 0;

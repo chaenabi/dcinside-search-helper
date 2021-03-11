@@ -12,8 +12,11 @@ const contentSearch = 's_type=search_subject_memo'
 const mini = '/mini'
 
 //////////////////////////////////////////////////////////////////
+// changable value
 const gallname = 'gme'
 const input = '설명'
+
+/////////////////////////////////////////////////////////////////////////////
 const keyword = encodeURI(input)
 
 //url example : https://gall.dcinside.com/mini/board/lists?id=gme&s_type=search_subject_memo&s_keyword=HelloWorld&exception_mode=recommend
