@@ -14,7 +14,7 @@ const minorgallary = '/mgallery'
 //////////////////////////////////////////////////////////////////
 // changable value
 const gallname = 'tenbagger'
-const input = 'gme'
+const input = 'trch'
 
 /////////////////////////////////////////////////////////////////////////////
 const keyword = encodeURI(input)
@@ -53,7 +53,6 @@ const getPostContent = (url) => {
 
         if ((search_next_btn = dom.window.document.querySelector('.search_next')) !== null) {
           const tbody = dom.window.document.querySelectorAll('tr.ub-content')
-          console.log(tbody)
           tbody.forEach((e) => {
              
                      if (e.querySelectorAll('td')[3].getAttribute('data-nick') !== '운영자') {  
@@ -62,7 +61,6 @@ const getPostContent = (url) => {
                         comment_cnt =  e.querySelectorAll('td')[2].querySelector('.reply_numbox') === null ? '0' : 
                                                           e.querySelectorAll('td')[2].querySelector('.reply_numbox').querySelector('.reply_num').innerHTML
                         writer = e.querySelectorAll('td')[3].firstElementChild.getAttribute('title');
-                        console.log(1)
 
                         date = e.querySelectorAll('td')[4].getAttribute('title')
                         if (writer === null) return;
