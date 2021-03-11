@@ -4,25 +4,28 @@ const request = require('request');
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 
+///////////////////////////////////////////////////////////////////////
 const dcinside = 'https://gall.dcinside.com'
 const recommend = '&exception_mode=recommend'
-const writerSearch = 's_type=search_name'
-const contentSearch = 's_type=search_subject_memo'
+const writerSearch = 's_type=search_name' // search writer. select below or this.
+const contentSearch = 's_type=search_subject_memo' 
+const minorgallary = '/mgallery'
 
+//////////////////////////////////////////////////////////////////
+// changable value
+const gallname = 'tenbagger'
+const input = 'gme'
 
-////////////////////////////////////////////////
-
-
-const gallname = 'pridepc_new4'
-const input = '견적'
-
-
-////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 const keyword = encodeURI(input)
+
+//url example : https://gall.dcinside.com/mgallery/board/lists?id=tenbagger&s_type=search_subject_memo&s_keyword=gme&exception_mode=recommend
 
 // if you want writer, change contentSearch to writerSearch variable.
 // if you search not recommend contents, just remove the variable.
-let path = '/board/lists/?id=' + gallname + '&' + contentSearch + '&s_keyword=' + keyword// + recommend 
+// mini for only mini gallary. if you not search mini gallary, remove the variable. 
+let path = minorgallary + '/board/lists/?id=' + gallname + '&' + contentSearch + '&s_keyword=' + keyword + recommend 
+
 
 
 
@@ -36,6 +39,8 @@ let sorted_saw = [];
 let sorted_rec = [];
 let hyper_link = "";
 let comment_cnt = "";
+let writer = "";
+
 
 client.fetch(url, {}, function (error, $, res, body) {
   //  console.log('error:', error)
@@ -45,26 +50,31 @@ client.fetch(url, {}, function (error, $, res, body) {
 const getPostContent = (url) => {
     request({ url: url }, function (error, response, body) {
        const dom = new JSDOM(body)
-     
+
         if ((search_next_btn = dom.window.document.querySelector('.search_next')) !== null) {
           const tbody = dom.window.document.querySelectorAll('tr.ub-content')
+          console.log(tbody)
           tbody.forEach((e) => {
-                     if (dom.window.document.querySelector('.ub-writer').getAttribute('user_name') !== '운영자') {  
-                        hyper_link = e.querySelectorAll('td')[1].querySelector('.reply_numbox') === null ? '링크 없음' : 
-                                                         e.querySelectorAll('td')[1].querySelector('.reply_numbox').getAttribute('href')
-                        comment_cnt =  e.querySelectorAll('td')[1].querySelector('.reply_numbox') === null ? '0' : 
-                                                          e.querySelectorAll('td')[1].querySelector('.reply_numbox').querySelector('.reply_num').innerHTML
-            
-                        date = e.querySelectorAll('td')[3].getAttribute('title')
-                        if (date === null) return;
-                        saw = e.querySelectorAll('td')[4].innerHTML
-                        rec_cnt = e.querySelectorAll('td')[5].innerHTML
+             
+                     if (e.querySelectorAll('td')[3].getAttribute('data-nick') !== '운영자') {  
+                        hyper_link = e.querySelectorAll('td')[2].querySelector('.reply_numbox') === null ? '링크 없음' : 
+                                                         e.querySelectorAll('td')[2].querySelector('.reply_numbox').getAttribute('href')
+                        comment_cnt =  e.querySelectorAll('td')[2].querySelector('.reply_numbox') === null ? '0' : 
+                                                          e.querySelectorAll('td')[2].querySelector('.reply_numbox').querySelector('.reply_num').innerHTML
+                        writer = e.querySelectorAll('td')[3].firstElementChild.getAttribute('title');
+                        console.log(1)
+
+                        date = e.querySelectorAll('td')[4].getAttribute('title')
+                        if (writer === null) return;
+                        saw = e.querySelectorAll('td')[5].innerHTML
+                        rec_cnt = e.querySelectorAll('td')[6].innerHTML
                         sorted_rec.push(rec_cnt);
                         sorted_saw.push(saw);
                         title = new JSDOM(e.innerHTML).window.document.querySelector('a').innerHTML.split('</em>')[1]
                         
                         andromeda_cnt++
                         console.log(`[게시물 제목] ${title}`)
+                        console.log(`[글  쓴  이] ${writer}`)
                         console.log(`[날     짜] ${date}`)
                         console.log(`[조  회  수] ${saw}`)
                         console.log(`[추  천  수] ${rec_cnt}`)
