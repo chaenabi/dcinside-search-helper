@@ -68,6 +68,12 @@ const getPostContent = (url) => {
                         sorted_saw.push(saw);
                         title = new JSDOM(e.innerHTML).window.document.querySelector('a').innerHTML.split('</em>')[1]
                         
+                        if(hyper_link.includes("&t=cv"))
+                        {
+                           hyper_link =  hyper_link.split("&t=cv")
+                           hyper_link = hyper_link[0]
+                        }   
+
                         andromeda_cnt++
                         console.log(`[게시물 제목] ${title}`)
                         console.log(`[글  쓴  이] ${writer}`)

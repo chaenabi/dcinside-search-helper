@@ -14,7 +14,7 @@ const minorgallary = '/mgallery'
 //////////////////////////////////////////////////////////////////
 // changable value
 const gallname = 'tenbagger'
-const input = '냐?'
+const input = '콜라'
 
 /////////////////////////////////////////////////////////////////////////////
 const keyword = encodeURI(input)
@@ -24,7 +24,7 @@ const keyword = encodeURI(input)
 // if you want writer, change contentSearch to writerSearch variable.
 // if you search not recommend contents, just remove the variable.
 // mini for only mini gallary. if you not search mini gallary, remove the variable. 
-let path = minorgallary + '/board/lists/?id=' + gallname + '&' + contentSearch + '&s_keyword=' + keyword + recommend 
+let path = minorgallary + '/board/lists/?id=' + gallname + '&' + contentSearch + '&s_keyword=' + keyword // + recommend 
 
 
 
@@ -69,6 +69,13 @@ const getPostContent = (url) => {
                         sorted_rec.push(rec_cnt);
                         sorted_saw.push(saw);
                         title = new JSDOM(e.innerHTML).window.document.querySelector('a').innerHTML.split('</em>')[1]
+                        
+
+                        if(hyper_link.includes("&t=cv"))
+                        {
+                           hyper_link =  hyper_link.split("&t=cv")
+                           hyper_link = hyper_link[0]
+                        }   
                         
                         andromeda_cnt++
                         console.log(`[게시물 제목] ${title}`)
