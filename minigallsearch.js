@@ -14,7 +14,7 @@ const mini = '/mini'
 //////////////////////////////////////////////////////////////////
 // changable value
 const gallname = 'gme'
-const input = '설명'
+const input = '떄'
 
 /////////////////////////////////////////////////////////////////////////////
 const keyword = encodeURI(input)
@@ -55,7 +55,7 @@ const getPostContent = (url) => {
           const tbody = dom.window.document.querySelectorAll('tr.ub-content')
           tbody.forEach((e) => {
                      if (e.querySelectorAll('td')[3].getAttribute('data-nick') !== '운영자') {  
-                        hyper_link = e.querySelectorAll('td')[2].querySelector('.reply_numbox') === null ? '링크 없음' : 
+                        hyper_link = e.querySelectorAll('td')[2].querySelector('.reply_numbox') === null ? dcinside + e.querySelectorAll('td')[2].querySelector('a').getAttribute('href') : 
                                                          e.querySelectorAll('td')[2].querySelector('.reply_numbox').getAttribute('href')
                         comment_cnt =  e.querySelectorAll('td')[2].querySelector('.reply_numbox') === null ? '0' : 
                                                           e.querySelectorAll('td')[2].querySelector('.reply_numbox').querySelector('.reply_num').innerHTML

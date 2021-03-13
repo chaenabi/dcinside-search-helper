@@ -13,8 +13,8 @@ const contentSearch = 's_type=search_subject_memo'
 ////////////////////////////////////////////////
 
 
-const gallname = 'pridepc_new4'
-const input = '견적'
+const gallname = 'neostock'
+const input = '셀리버리'
 
 
 ////////////////////////////////////////////
@@ -22,7 +22,7 @@ const keyword = encodeURI(input)
 
 // if you want writer, change contentSearch to writerSearch variable.
 // if you search not recommend contents, just remove the variable.
-let path = '/board/lists/?id=' + gallname + '&' + contentSearch + '&s_keyword=' + keyword// + recommend 
+let path = '/board/lists/?id=' + gallname + '&' + contentSearch + '&s_keyword=' + keyword + recommend 
 
 
 
@@ -50,7 +50,7 @@ const getPostContent = (url) => {
           const tbody = dom.window.document.querySelectorAll('tr.ub-content')
           tbody.forEach((e) => {
                      if (dom.window.document.querySelector('.ub-writer').getAttribute('user_name') !== '운영자') {  
-                        hyper_link = e.querySelectorAll('td')[1].querySelector('.reply_numbox') === null ? '링크 없음' : 
+                        hyper_link = e.querySelectorAll('td')[1].querySelector('.reply_numbox') === null ? dcinside + e.querySelectorAll('td')[1].querySelector('a').getAttribute('href') : 
                                                          e.querySelectorAll('td')[1].querySelector('.reply_numbox').getAttribute('href')
                         comment_cnt =  e.querySelectorAll('td')[1].querySelector('.reply_numbox') === null ? '0' : 
                                                           e.querySelectorAll('td')[1].querySelector('.reply_numbox').querySelector('.reply_num').innerHTML

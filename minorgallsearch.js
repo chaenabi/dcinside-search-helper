@@ -14,7 +14,7 @@ const minorgallary = '/mgallery'
 //////////////////////////////////////////////////////////////////
 // changable value
 const gallname = 'tenbagger'
-const input = 'trch'
+const input = '냐?'
 
 /////////////////////////////////////////////////////////////////////////////
 const keyword = encodeURI(input)
@@ -56,7 +56,7 @@ const getPostContent = (url) => {
           tbody.forEach((e) => {
              
                      if (e.querySelectorAll('td')[3].getAttribute('data-nick') !== '운영자') {  
-                        hyper_link = e.querySelectorAll('td')[2].querySelector('.reply_numbox') === null ? '링크 없음' : 
+                        hyper_link = e.querySelectorAll('td')[2].querySelector('.reply_numbox') === null ? dcinside + e.querySelectorAll('td')[2].querySelector('a').getAttribute('href') : 
                                                          e.querySelectorAll('td')[2].querySelector('.reply_numbox').getAttribute('href')
                         comment_cnt =  e.querySelectorAll('td')[2].querySelector('.reply_numbox') === null ? '0' : 
                                                           e.querySelectorAll('td')[2].querySelector('.reply_numbox').querySelector('.reply_num').innerHTML
