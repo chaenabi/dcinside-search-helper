@@ -14,10 +14,10 @@ $ node gallSearch.js > result.txt
 # 상세 설명서
 
 1. nodejs 설치
-2. vscode 설치하고 
-2-1. nodejs 설정 세팅 (선택사항)
-2-1. npm install 
-2-2. npm install cheerio
+2. vscode 설치하고 (선택사항, 다른 툴 사용해도 됨)
+2-1. nodejs 설정 세팅 (선택사항, 스킵가능)
+2-2. 터미널에 npm install 실행 
+
 3. gallsearch.js or minigallsearch.js or minorgallsearch.js 파일에서 const input = '설명' 부분을 찾는다.
 4. 검색을 원하는 내용으로 바꾼다 예시) const input = "ㅎㅇ" -> ㅎㅇ라고 적힌 게시물을 찾을 수 있다.
 4. 터미널에서 node minigallsearch.js > result.txt
