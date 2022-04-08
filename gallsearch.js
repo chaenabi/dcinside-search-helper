@@ -13,8 +13,8 @@ const contentSearch = 's_type=search_subject_memo'
 ////////////////////////////////////////////////
 
 
-const gallname = 'neostock'
-const input = '셀리버리'
+const gallname = 'ne'
+const input = '부산살아열'
 
 
 ////////////////////////////////////////////
@@ -22,7 +22,7 @@ const keyword = encodeURI(input)
 
 // if you want writer, change contentSearch to writerSearch variable.
 // if you search not recommend contents, just remove the variable.
-let path = '/board/lists/?id=' + gallname + '&' + contentSearch + '&s_keyword=' + keyword + recommend 
+let path = '/board/lists/?id=' + gallname + '&' + writerSearch + '&s_keyword=' + keyword //+ recommend 
 
 
 
@@ -48,6 +48,7 @@ const getPostContent = (url) => {
      
         if ((search_next_btn = dom.window.document.querySelector('.search_next')) !== null) {
           const tbody = dom.window.document.querySelectorAll('tr.ub-content')
+          
           tbody.forEach((e) => {
                      if (dom.window.document.querySelector('.ub-writer').getAttribute('user_name') !== '운영자') {  
                         hyper_link = e.querySelectorAll('td')[1].querySelector('.reply_numbox') === null ? dcinside + e.querySelectorAll('td')[1].querySelector('a').getAttribute('href') : 
@@ -70,12 +71,12 @@ const getPostContent = (url) => {
                         }   
 
                         andromeda_cnt++
-                        console.log(`[게시물 제목] ${title}`)
-                        console.log(`[날     짜] ${date}`)
-                        console.log(`[조  회  수] ${saw}`)
-                        console.log(`[추  천  수] ${rec_cnt}`)
-                        console.log(`[댓  글  수] ${comment_cnt}`)
-                        console.log(`[링      크] ${hyper_link}`)
+                        console.log(`[title]       ${title}`)
+                        console.log(`[date]        ${date}`)
+                        console.log(`[sawCount]    ${saw}`)
+                        console.log(`[recommended] ${rec_cnt}`)
+                        console.log(`[comments]    ${comment_cnt}`)
+                        console.log(`[link]        ${hyper_link}`)
                         //console.log(`[념글 카운트] ${andromeda_cnt}`) active only recommend search
                         console.log('---------------------------')
                     }
