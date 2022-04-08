@@ -13,8 +13,8 @@ const contentSearch = 's_type=search_subject_memo'
 ////////////////////////////////////////////////
 
 
-const gallname = 'ne'
-const input = '부산살아열'
+const gallname = '갤러리 코드. 프로그래밍 갤러리라면 (programming), 해외주식 갤러리라면 (tenbagger) '
+const input = '원하는 검색어'
 
 
 ////////////////////////////////////////////
