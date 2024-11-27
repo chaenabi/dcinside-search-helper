@@ -1,7 +1,12 @@
+const fs = require('fs')
+const path = require('path')
 const axios = require('axios')
 const iconv = require('iconv-lite')
 const jsdom = require('jsdom')
 const { JSDOM } = jsdom
+
+const resultFile = path.join(__dirname, 'result.txt')
+const writeStream = fs.createWriteStream(resultFile, { encoding: 'utf8' })
 
 const dcinsideURI = 'https://gall.dcinside.com'
 const minigall = '/mini'
@@ -10,10 +15,14 @@ const input = '검색어' // 검색어
 const keyword = encodeURIComponent(input)
 const optSubjAndContent = 's_type=search_subject_memo' // 제목+내용 검색
 const recommend = '&exception_mode=recommend' // 추천 게시물 필터
-let path = `${minigall}/board/lists/?id=${gallname}&${optSubjAndContent}&s_keyword=${keyword}${recommend}`
+let p = `${minigall}/board/lists/?id=${gallname}&${optSubjAndContent}&s_keyword=${keyword}${recommend}`
 
 let maxRec = 0
 let maxSaw = 0
+
+const logToFile = message => {
+  writeStream.write(message + '\n')
+}
 
 const fetchPosts = async url => {
   try {
@@ -57,14 +66,14 @@ const fetchPosts = async url => {
             ? dcinsideURI + linkElem.getAttribute('href')
             : '링크 없음'
 
-          console.log(`[게시물 제목] ${title}`)
-          console.log(`[글  쓴  이] ${writer}`)
-          console.log(`[날     짜] ${date}`)
-          console.log(`[조  회  수] ${saw}`)
-          console.log(`[추  천  수] ${rec}`)
-          console.log(`[댓  글  수] ${commentCount}`)
-          console.log(`[링      크] ${link}`)
-          console.log('---------------------------')
+          logToFile(`[게시물 제목] ${title}`)
+          logToFile(`[글  쓴  이] ${writer}`)
+          logToFile(`[날     짜] ${date}`)
+          logToFile(`[조  회  수] ${saw}`)
+          logToFile(`[추  천  수] ${rec}`)
+          logToFile(`[댓  글  수] ${commentCount}`)
+          logToFile(`[링      크] ${link}`)
+          logToFile('---------------------------')
 
           maxRec = Math.max(maxRec, rec)
           maxSaw = Math.max(maxSaw, saw)
@@ -87,9 +96,9 @@ const fetchPosts = async url => {
 }
 
 const showStats = async () => {
-  await fetchPosts(dcinsideURI + path)
-  console.log(`최대 추천수: ${maxRec}`)
-  console.log(`최대 조회수: ${maxSaw}`)
+  await fetchPosts(dcinsideURI + p)
+  logToFile(`최대 추천수: ${maxRec}`)
+  logToFile(`최대 조회수: ${maxSaw}`)
 }
 
 showStats()

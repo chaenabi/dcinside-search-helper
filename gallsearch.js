@@ -1,18 +1,27 @@
+const fs = require('fs')
+const path = require('path')
 const axios = require('axios')
 const iconv = require('iconv-lite')
 const jsdom = require('jsdom')
 const { JSDOM } = jsdom
+
+const resultFile = path.join(__dirname, 'result.txt')
+const writeStream = fs.createWriteStream(resultFile, { encoding: 'utf8' })
 
 const dcinside = 'https://gall.dcinside.com'
 const gallname = 'programming' // 갤러리 코드: 프로그래밍 갤러리라면 (programming), 해외주식 갤러리라면 (tenbagger)
 const input = '원하는 검색어' // 검색어
 const keyword = encodeURIComponent(input)
 const writerSearch = 's_type=search_name' // 작성자로 검색
-let path = `/board/lists/?id=${gallname}&${writerSearch}&s_keyword=${keyword}`
-const url = dcinside + path
+let p = `/board/lists/?id=${gallname}&${writerSearch}&s_keyword=${keyword}`
+const url = dcinside + p
 
 let maxRec = 0
 let maxSaw = 0
+
+const logToFile = message => {
+  writeStream.write(message + '\n')
+}
 
 const fetchPosts = async url => {
   try {
@@ -56,14 +65,14 @@ const fetchPosts = async url => {
             ? dcinside + linkElem.getAttribute('href')
             : '링크 없음'
 
-          console.log(`[게시물 제목] ${title}`)
-          console.log(`[글  쓴  이] ${writer}`)
-          console.log(`[날     짜] ${date}`)
-          console.log(`[조  회  수] ${saw}`)
-          console.log(`[추  천  수] ${rec}`)
-          console.log(`[댓  글  수] ${commentCount}`)
-          console.log(`[링      크] ${link}`)
-          console.log('---------------------------')
+          logToFile(`[게시물 제목] ${title}`)
+          logToFile(`[글  쓴  이] ${writer}`)
+          logToFile(`[날     짜] ${date}`)
+          logToFile(`[조  회  수] ${saw}`)
+          logToFile(`[추  천  수] ${rec}`)
+          logToFile(`[댓  글  수] ${commentCount}`)
+          logToFile(`[링      크] ${link}`)
+          logToFile('---------------------------')
 
           maxRec = Math.max(maxRec, rec)
           maxSaw = Math.max(maxSaw, saw)
@@ -87,8 +96,8 @@ const fetchPosts = async url => {
 
 const showStats = async () => {
   await fetchPosts(url)
-  console.log(`최대 추천수: ${maxRec}`)
-  console.log(`최대 조회수: ${maxSaw}`)
+  logToFile(`최대 추천수: ${maxRec}`)
+  logToFile(`최대 조회수: ${maxSaw}`)
 }
 
 showStats()
