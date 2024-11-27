@@ -32,8 +32,7 @@ const fetchPosts = async url => {
       const response = await axios.get(currentPage, {
         responseType: 'arraybuffer',
       })
-      const decodedData = iconv.decode(response.data, 'EUC-KR') // EUC-KR → UTF-8 변환
-      const dom = new JSDOM(decodedData)
+      const dom = new JSDOM(response)
       const document = dom.window.document
 
       const rows = document.querySelectorAll('tr.ub-content')

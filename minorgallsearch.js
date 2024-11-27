@@ -1,105 +1,149 @@
 const fs = require('fs')
 const path = require('path')
-const axios = require('axios')
-const iconv = require('iconv-lite')
+//const axios = require('axios');
+const client = require('cheerio-httpcli')
+const request = require('request')
 const jsdom = require('jsdom')
 const { JSDOM } = jsdom
 
 const resultFile = path.join(__dirname, 'result.txt')
 const writeStream = fs.createWriteStream(resultFile, { encoding: 'utf8' })
 
+///////////////////////////////////////////////////////////////////////
 const dcinside = 'https://gall.dcinside.com'
-const gallname = 'onshinproject' // 갤러리 이름
-const input = '각청' // 검색 키워드
-const keyword = encodeURIComponent(input)
-const writerSearch = 's_type=search_name' // 작성자로 검색
-const p = `/board/lists/?id=${gallname}&${writerSearch}&s_keyword=${keyword}`
-const url = dcinside + p
+const recommend = '&exception_mode=recommend'
+const writerSearch = 's_type=search_name' // search writer. select below or this.
+const contentSearch = 's_type=search_subject_memo'
+const minorgallary = '/mgallery'
 
-let maxRec = 0
-let maxSaw = 0
+//////////////////////////////////////////////////////////////////
+// changable value
+const gallname = 'onshinproject'
+const input = '각청'
+
+/////////////////////////////////////////////////////////////////////////////
+const keyword = encodeURI(input)
+
+//url example : https://gall.dcinside.com/mgallery/board/lists?id=tenbagger&s_type=search_subject_memo&s_keyword=gme&exception_mode=recommend
+
+// if you want writer, change contentSearch to writerSearch variable.
+// if you search not recommend contents, just remove the variable.
+// mini for only mini gallary. if you not search mini gallary, remove the variable.
+let p =
+  minorgallary +
+  '/board/lists/?id=' +
+  gallname +
+  '&' +
+  contentSearch +
+  '&s_keyword=' +
+  keyword // + recommend
+
+let url = dcinside + p
+let title = ''
+let andromeda_cnt = 0
+let date = ''
+let saw = ''
+let rec_cnt = ''
+let sorted_saw = []
+let sorted_rec = []
+let hyper_link = ''
+let comment_cnt = ''
+let writer = ''
+
+client.fetch(url, {}, function (error, $, res, body) {
+  //  console.log('error:', error)
+  //  console.log('$:', $)
+})
 
 const logToFile = message => {
   writeStream.write(message + '\n')
 }
 
-const fetchPosts = async url => {
-  try {
-    let currentPage = url
+const getPostContent = url => {
+  request({ url: url }, function (error, response, body) {
+    const dom = new JSDOM(body)
 
-    while (currentPage) {
-      const response = await axios.get(currentPage, {
-        responseType: 'arraybuffer',
-      })
-      const decodedData = iconv.decode(response.data, 'EUC-KR') // EUC-KR → UTF-8 변환
-      const dom = new JSDOM(decodedData)
-      const document = dom.window.document
+    if (
+      (search_next_btn = dom.window.document.querySelector('.search_next')) !==
+      null
+    ) {
+      const tbody = dom.window.document.querySelectorAll('tr.ub-content')
+      tbody.forEach(e => {
+        if (
+          e.querySelectorAll('td')[3].getAttribute('data-nick') !== '운영자'
+        ) {
+          hyper_link =
+            e.querySelectorAll('td')[2].querySelector('.reply_numbox') === null
+              ? dcinside +
+                e
+                  .querySelectorAll('td')[2]
+                  .querySelector('a')
+                  .getAttribute('href')
+              : e
+                  .querySelectorAll('td')[2]
+                  .querySelector('.reply_numbox')
+                  .getAttribute('href')
+          comment_cnt =
+            e.querySelectorAll('td')[2].querySelector('.reply_numbox') === null
+              ? '0'
+              : e
+                  .querySelectorAll('td')[2]
+                  .querySelector('.reply_numbox')
+                  .querySelector('.reply_num').innerHTML
+          writer = e
+            .querySelectorAll('td')[3]
+            .firstElementChild.getAttribute('title')
 
-      const rows = document.querySelectorAll('tr.ub-content')
+          date = e.querySelectorAll('td')[4].getAttribute('title')
+          if (writer === null) return
+          saw = e.querySelectorAll('td')[5].innerHTML
+          rec_cnt = e.querySelectorAll('td')[6].innerHTML
+          sorted_rec.push(rec_cnt)
+          sorted_saw.push(saw)
+          title = new JSDOM(e.innerHTML).window.document
+            .querySelector('a')
+            .innerHTML.split('</em>')[1]
 
-      console.log(rows)
+          if (hyper_link.includes('&t=cv')) {
+            hyper_link = hyper_link.split('&t=cv')
+            hyper_link = hyper_link[0]
+          }
 
-      for (let row of rows) {
-        try {
-          const writerElem = row.querySelector('td:nth-child(4)')
-          if (!writerElem) continue // 작성자 데이터가 없는 행 건너뜀
-
-          const writer = writerElem.getAttribute('data-nick')
-          if (writer === '운영자') continue // 운영자는 제외
-
-          const titleElem = row.querySelector('td:nth-child(2) a')
-          const title = titleElem ? titleElem.textContent.trim() : '제목 없음'
-
-          const dateElem = row.querySelector('td:nth-child(5)')
-          const date = dateElem ? dateElem.getAttribute('title') : '날짜 없음'
-
-          const sawElem = row.querySelector('td:nth-child(6)')
-          const saw = sawElem ? parseInt(sawElem.textContent, 10) : 0
-
-          const recElem = row.querySelector('td:nth-child(7)')
-          const rec = recElem ? parseInt(recElem.textContent, 10) : 0
-
-          const commentBox = row.querySelector('.reply_num')
-          const commentCount = commentBox ? commentBox.textContent.trim() : '0'
-
-          const linkElem = row.querySelector('td:nth-child(2) a')
-          const link = linkElem
-            ? dcinside + linkElem.getAttribute('href')
-            : '링크 없음'
+          andromeda_cnt++
 
           logToFile(`[게시물 제목] ${title}`)
           logToFile(`[글  쓴  이] ${writer}`)
           logToFile(`[날     짜] ${date}`)
           logToFile(`[조  회  수] ${saw}`)
-          logToFile(`[추  천  수] ${rec}`)
-          logToFile(`[댓  글  수] ${commentCount}`)
-          logToFile(`[링      크] ${link}`)
+          logToFile(`[추  천  수] ${rec_cnt}`)
+          logToFile(`[댓  글  수] ${comment_cnt}`)
+          logToFile(`[링      크] ${hyper_link}`)
           logToFile('---------------------------')
-
-          maxRec = Math.max(maxRec, rec)
-          maxSaw = Math.max(maxSaw, saw)
-        } catch (innerError) {
-          console.error('행 처리 중 오류 발생:', innerError.message)
-        }
-      }
-
-      // 다음 페이지 링크 탐색
-      const nextButton = document.querySelector('.search_next')
-      if (nextButton) {
-        currentPage = dcinside + nextButton.getAttribute('href')
-      } else {
-        currentPage = null // 마지막 페이지 도달
-      }
+          //console.log(`[념글 카운트] ${andromeda_cnt}`) active only recommend search
+          console.log('---------------------------')
+        } else
+          dom.window.document
+            .querySelector('.ub-writer')
+            .setAttribute('user_name', '')
+      })
+      //console.log(p)
+      p = search_next_btn.href
+      url = dcinside + p
+      getPostContent(url)
     }
-  } catch (error) {
-    console.error('페이지 처리 중 오류 발생:', error.message)
-  }
+  })
 }
 
-const showStats = async () => {
-  await fetchPosts(url)
-  logToFile(`최대 추천수: ${maxRec}`)
-  logToFile(`최대 조회수: ${maxSaw}`)
+const showStat = () => {
+  getPostContent(url)
+  // getMax();
 }
 
-showStats()
+const getMax = () => {
+  setTimeout(() => {
+    logToFile(`최대 추천수: ${sorted_rec.sort((a, b) => b - a)[0]}`)
+    logToFile(`최대 조회수: ${sorted_saw.sort((a, b) => b - a)[0]}`)
+  }, 30000)
+}
+
+showStat()
